@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using System.Data;
 using System.Data.Common;
+using System.Globalization;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
@@ -33,13 +34,13 @@ namespace Infoware.EntityFrameworkCore.MemoryCache.Interceptors
             if (cacheParameters != null)
             {
                 await _semaphore.WaitAsync(cancellationToken);
-                await _eFCoreMemoryCache.IfExistsDoAsync<IList<Dictionary<string, object>>>(
+                await _eFCoreMemoryCache.IfExistsDoAsync<EFCachedData>(
                     cacheParameters.CacheKey,
                     (cacheEntry) =>
                     {
                         command.CommandText = $"-- Skipping DB call; using cache {cacheParameters.CacheKey}.";
 
-                        result = InterceptionResult<DbDataReader>.SuppressWithResult(ToDataReader(cacheEntry)!);
+                        result = ProcessCachedData(result, cacheEntry);
                     },
                     cancellationToken
                 );
@@ -47,6 +48,54 @@ namespace Infoware.EntityFrameworkCore.MemoryCache.Interceptors
             }
 
             return result;
+        }
+
+        private static T ProcessCachedData<T>(T result, EFCachedData cacheResult)
+        {
+            switch (result)
+            {
+                case InterceptionResult<DbDataReader>:
+                    {
+                        if (cacheResult.IsNull || cacheResult.TableRows == null)
+                        {
+                            using var rows = new EFTableRowsDataReader(new EFTableRows());
+                            return (T)Convert.ChangeType(
+                                InterceptionResult<DbDataReader>.SuppressWithResult(rows),
+                                typeof(T),
+                                CultureInfo.InvariantCulture);
+                        }
+
+                        using var dataRows = new EFTableRowsDataReader(cacheResult.TableRows);
+                        return (T)Convert.ChangeType(
+                            InterceptionResult<DbDataReader>.SuppressWithResult(dataRows),
+                            typeof(T),
+                            CultureInfo.InvariantCulture);
+                    }
+
+                case InterceptionResult<int>:
+                    {
+                        var cachedResult = cacheResult.IsNull ? default : cacheResult.NonQuery;
+
+                        return (T)Convert.ChangeType(
+                            InterceptionResult<int>.SuppressWithResult(cachedResult),
+                            typeof(T),
+                            CultureInfo.InvariantCulture);
+                    }
+
+                case InterceptionResult<object>:
+                    {
+                        var cachedResult = cacheResult.IsNull ? default : cacheResult.Scalar;
+
+                        return (T)Convert.ChangeType(
+                            InterceptionResult<object>
+                                .SuppressWithResult(cachedResult ?? new object()),
+                            typeof(T),
+                            CultureInfo.InvariantCulture);
+                    }
+
+                default:
+                    return result;
+            }
         }
 
         public override async ValueTask<DbDataReader> ReaderExecutedAsync(
@@ -58,28 +107,32 @@ namespace Infoware.EntityFrameworkCore.MemoryCache.Interceptors
             CacheParameters? cacheParameters = GetCacheParameters(command.CommandText);
             if (cacheParameters != null)
             {
-                try
+                if (result is EFTableRowsDataReader)
                 {
-                    var resultsList = await DataReaderToDictionary(result, cancellationToken);
+                    return result;
+                }
 
-                    await _semaphore.WaitAsync(cancellationToken);
-                    if (resultsList.Any())
-                    {
-                        await _eFCoreMemoryCache.SetAsync(cacheParameters.CacheKey, resultsList, 
-                            cacheParameters.AbsoluteExpirationRelativeToNow, cancellationToken);
-                        return ToDataReader(resultsList);
-                    }
-                }
-                finally
-                {
-                    await result.DisposeAsync();
-                    _semaphore.Release();
-                }
+                await _semaphore.WaitAsync(cancellationToken);
+                var data = ProcessDataToCache(result);
+                await _eFCoreMemoryCache.SetAsync(cacheParameters.CacheKey, data, 
+                    cacheParameters.AbsoluteExpirationRelativeToNow, cancellationToken);
+                _semaphore.Release();
+                return new EFTableRowsDataReader(data.TableRows!);
             }
 
             return result;
         }
 
+        private static EFCachedData ProcessDataToCache(DbDataReader dataReader)
+        {
+            using var dbReaderLoader = new EFDataReaderLoader(dataReader);
+            var tableRows = dbReaderLoader.LoadAndClose();
+
+            return new EFCachedData 
+            { 
+                TableRows = tableRows 
+            };
+        }
 
         private static CacheParameters? GetCacheParameters(string commandText)
         {
@@ -105,49 +158,6 @@ namespace Infoware.EntityFrameworkCore.MemoryCache.Interceptors
             }
             catch { }
             return null;
-        }
-
-        private static DataTableReader ToDataReader(IList<Dictionary<string, object>>? resultsList)
-        {
-            var table = new DataTable();
-            if (resultsList?.Any() ?? false)
-            {
-                foreach (var pair in resultsList.First())
-                {
-                    table.Columns.Add(pair.Key,
-                        pair.Value is not null && pair.Value?.GetType() != typeof(DBNull)
-                            ? pair.Value!.GetType()
-                            : typeof(object));
-                }
-
-                foreach (var row in resultsList)
-                {
-                    table.Rows.Add(row.Values.ToArray());
-                }
-            }
-            return table.CreateDataReader();
-        }
-
-        private static async Task<IList<Dictionary<string, object>>> DataReaderToDictionary(
-            DbDataReader result, CancellationToken cancellationToken)
-        {
-            var resultsList = new List<Dictionary<string, object>>();
-            if (result.HasRows)
-            {
-                while (await result.ReadAsync(cancellationToken))
-                {
-                    var row = new Dictionary<string, object>();
-                    for (var i = 0; i < result.FieldCount; i++)
-                    {
-                        row.TryAdd(result.GetName(i), result.GetValue(i));
-                    }
-
-                    resultsList.Add(row);
-                }
-
-            }
-            await result.CloseAsync();
-            return resultsList;
         }
 
         protected virtual void Dispose(bool disposing)
