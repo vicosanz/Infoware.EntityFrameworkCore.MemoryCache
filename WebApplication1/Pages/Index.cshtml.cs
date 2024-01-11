@@ -26,7 +26,10 @@ namespace WebApplication1.Pages
             //    Name = "Test",
             //});
 
-            var lista = await _blogContext.Set<Blog>().CacheableTagWith("blogskey", new TimeSpan(0,0,10)).ToListAsync();
+            var query = _blogContext.Set<Blog>().CacheableTagWith("blogskey", new TimeSpan(0, 0, 20));
+            var res1 = await EntityFrameworkQueryableExtensions.CountAsync(query.TagWith("[[COUNT]]"));
+            var res2 = await EntityFrameworkQueryableExtensions.ToListAsync(query.Skip(2));
+            int a = 1;
         }
     }
 }

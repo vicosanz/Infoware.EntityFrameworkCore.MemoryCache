@@ -86,10 +86,21 @@ namespace Infoware.EntityFrameworkCore.MemoryCache.Interceptors
             try
             {
                 Regex regexCacheParameters = new("-- ({\"CacheKey\".*})");
+                Regex regexCacheModifier = new("-- \\[\\[(.*)\\]\\]");
+
                 Match match = regexCacheParameters.Match(commandText);
                 if (match.Success)
                 {
-                    return JsonSerializer.Deserialize<CacheParameters>(match.Groups[1].Value);
+                    CacheParameters? cacheParameters = JsonSerializer.Deserialize<CacheParameters>(match.Groups[1].Value);
+                    if (cacheParameters != null)
+                    {
+                        Match modifierMatch = regexCacheModifier.Match(commandText);
+                        if (modifierMatch.Success)
+                        {
+                            cacheParameters.CacheKey += modifierMatch.Groups[1].Value;
+                        }
+                    }
+                    return cacheParameters;
                 }
             }
             catch { }
