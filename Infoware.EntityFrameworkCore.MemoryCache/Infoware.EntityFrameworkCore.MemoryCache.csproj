@@ -4,19 +4,24 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Description>Cache in memory specific queries</Description>
+    <Description>Cache specific queries</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/vicosanz/Infoware.EntityFrameworkCore.MemoryCache</PackageProjectUrl>
     <RepositoryUrl>https://github.com/vicosanz/Infoware.EntityFrameworkCore.MemoryCache</RepositoryUrl>
     <Authors>Victor Sanchez</Authors>
     <Company>Infoware Soluciones</Company>
-    <Version>1.0.0</Version>
-    <PackageReleaseNotes>Cache in memory specific queries</PackageReleaseNotes>
+    <Version>1.0.1</Version>
+    <PackageReleaseNotes>Cache specific queries</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Infoware.UnitOfWork" Version="1.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.7" />
+    <Compile Remove="Extensions\CacheableExtensions.cs" />
+    <Compile Remove="QueryCached.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.26" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.26" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
   </ItemGroup>

@@ -7,11 +7,11 @@ namespace Infoware.EntityFrameworkCore.MemoryCache
     public class QueryCached<TSource>
     {
         private readonly IQueryable<TSource> _source;
-        private readonly IEFCoreMemoryCache _memoryCache;
+        private readonly IEFCoreCache _memoryCache;
         private readonly string _cacheKey;
         private readonly TimeSpan _slidingExpiration;
 
-        public QueryCached(IQueryable<TSource> source, IEFCoreMemoryCache memoryCache, string cacheKey,
+        public QueryCached(IQueryable<TSource> source, IEFCoreCache memoryCache, string cacheKey,
             TimeSpan slidingExpiration)
         {
             _source = source;

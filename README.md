@@ -33,7 +33,7 @@ Usage:
                         Name = user.Name
                     };
 
-            return await query.Cacheable(_memoryCache, cacheKey, TimeSpan.FromMinutes(15))
+            return await query.CacheableTagWith(cacheKey, TimeSpan.FromMinutes(15))
                 .ToPagedListAsync(pageIndex: page, pageSize: rowsPerPage, cancellationToken: cancellationToken);
 
         }
@@ -77,7 +77,7 @@ If you want to ensure to invalidate cache when changes are saved execute RemoveA
 
         public override User Insert(User entity)
         {
-            _memoryCache.PendingRemoveKeysStartsWith("user_");
+            _memoryCache.AddPendingRemoveKeysStartsWith("user_");
             return base.Insert(User);
         }
     }

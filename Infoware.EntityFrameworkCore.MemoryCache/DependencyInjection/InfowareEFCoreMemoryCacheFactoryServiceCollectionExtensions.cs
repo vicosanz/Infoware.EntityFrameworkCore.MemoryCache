@@ -34,7 +34,7 @@ namespace Infoware.EntityFrameworkCore.MemoryCache.DependencyInjection
         private static IServiceCollection AddInfowareEFCoreMemoryCache(IServiceCollection services) 
         {
             services.AddMemoryCache();
-            services.AddSingleton<IEFCoreMemoryCache, EFCoreMemoryCache>();
+            services.AddSingleton<IEFCoreCache, EFCoreMemoryCache>();
             return services;
         }
     }
