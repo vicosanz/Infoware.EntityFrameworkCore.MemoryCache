@@ -1,7 +1,8 @@
-﻿using Infoware.EntityFrameworkCore.MemoryCache;
+﻿using Infoware.MemoryCache;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Infoware.EntityFrameworkCore.MemoryCache.DependencyInjection
 {
@@ -33,8 +34,7 @@ namespace Infoware.EntityFrameworkCore.MemoryCache.DependencyInjection
 
         private static IServiceCollection AddInfowareEFCoreMemoryCache(IServiceCollection services) 
         {
-            services.AddMemoryCache();
-            services.AddSingleton<IEFCoreCache, EFCoreMemoryCache>();
+            services.AddInfowareMemoryCache();
             return services;
         }
     }

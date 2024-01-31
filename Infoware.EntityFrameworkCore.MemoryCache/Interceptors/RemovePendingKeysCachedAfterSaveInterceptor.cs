@@ -1,4 +1,5 @@
 ﻿using Infoware.EntityFrameworkCore.MemoryCache.Models;
+using Infoware.MemoryCache;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Caching.Memory;
@@ -14,9 +15,9 @@ namespace Infoware.EntityFrameworkCore.MemoryCache.Interceptors
 {
     public class RemovePendingKeysCachedAfterSaveInterceptor : SaveChangesInterceptor
     {
-        private readonly IEFCoreCache _eFCoreMemoryCache;
+        private readonly ICache _eFCoreMemoryCache;
 
-        public RemovePendingKeysCachedAfterSaveInterceptor(IEFCoreCache eFCoreMemoryCache)
+        public RemovePendingKeysCachedAfterSaveInterceptor(ICache eFCoreMemoryCache)
         {
             _eFCoreMemoryCache = eFCoreMemoryCache;
         }

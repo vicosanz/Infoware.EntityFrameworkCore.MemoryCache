@@ -1,8 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace Infoware.EntityFrameworkCore.MemoryCache
+﻿namespace Infoware.MemoryCache
 {
-    public interface IEFCoreCache
+    public interface ICache
     {
         bool TryGetValue<TItem>(string key, out TItem value);
         Task<TItem?> GetAsync<TItem>(string key, CancellationToken cancellationToken);

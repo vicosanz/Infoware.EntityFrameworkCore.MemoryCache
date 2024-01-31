@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	<Description>Common cache tecniques</Description>
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<PackageProjectUrl>https://github.com/vicosanz/Infoware.MemoryCache</PackageProjectUrl>
+	<RepositoryUrl>https://github.com/vicosanz/Infoware.MemoryCache</RepositoryUrl>
+	<Authors>Victor Sanchez</Authors>
+	<Company>Infoware Soluciones</Company>
+	<Version>1.0.0</Version>
+	<PackageReleaseNotes>Common cache tecniques</PackageReleaseNotes>
+  </PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="6.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
+	</ItemGroup>
+</Project>

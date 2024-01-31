@@ -1,25 +1,17 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Infoware.EntityFrameworkCore.MemoryCache
+namespace Infoware.MemoryCache
 {
-    public class EFCoreMemoryCache : IEFCoreCache
+    public class InfowareMemoryCache : ICache
     {
         private readonly IMemoryCache _memoryCache;
-        private readonly ILogger<EFCoreMemoryCache> _logger;
+        private readonly ILogger<InfowareMemoryCache> _logger;
         private readonly ConcurrentDictionary<string, string> _cachedKeys = new();
         private readonly ConcurrentQueue<string> _removeCachePendings = new();
 
-        public EFCoreMemoryCache(IMemoryCache memoryCache, ILogger<EFCoreMemoryCache> logger)
+        public InfowareMemoryCache(IMemoryCache memoryCache, ILogger<InfowareMemoryCache> logger)
         {
             _memoryCache = memoryCache;
             _logger = logger;
@@ -35,7 +27,7 @@ namespace Infoware.EntityFrameworkCore.MemoryCache
             }
             else
             {
-                _logger.LogInformation("No cached yet {key}, requesting from database", key);
+                _logger.LogInformation("No cached yet {key}", key);
                 return false;
             }
         }
@@ -71,7 +63,7 @@ namespace Infoware.EntityFrameworkCore.MemoryCache
                 result = factory();
                 if (result != null)
                 {
-                    await SetAsync(key, result, absoluteExpirationRelativeToNow);
+                    await SetAsync(key, result, absoluteExpirationRelativeToNow, cancellationToken);
                 }
             }
             return result;
@@ -85,7 +77,7 @@ namespace Infoware.EntityFrameworkCore.MemoryCache
                 result = await factory();
                 if (result != null)
                 {
-                    await SetAsync(key, result, absoluteExpirationRelativeToNow);
+                    await SetAsync(key, result, absoluteExpirationRelativeToNow, cancellationToken);
                 }
             }
             return result;
@@ -135,7 +127,7 @@ namespace Infoware.EntityFrameworkCore.MemoryCache
             _cachedKeys.TryAdd(key, string.Empty);
         }
 
-        public Task SetAsync<TItem>(string key, TItem result, TimeSpan absoluteExpirationRelativeToNow, 
+        public Task SetAsync<TItem>(string key, TItem result, TimeSpan absoluteExpirationRelativeToNow,
             CancellationToken cancellationToken = default)
         {
             Set(key, result, absoluteExpirationRelativeToNow);

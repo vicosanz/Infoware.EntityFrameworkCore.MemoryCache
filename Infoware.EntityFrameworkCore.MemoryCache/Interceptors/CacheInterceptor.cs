@@ -1,4 +1,5 @@
 ﻿using Infoware.EntityFrameworkCore.MemoryCache.Models;
+using Infoware.MemoryCache;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using System.Data;
 using System.Data.Common;
@@ -10,9 +11,9 @@ namespace Infoware.EntityFrameworkCore.MemoryCache.Interceptors
 {
     public class CacheInterceptor : DbCommandInterceptor, IDisposable
     {
-        private readonly IEFCoreCache _eFCoreMemoryCache;
+        private readonly ICache _eFCoreMemoryCache;
 
-        public CacheInterceptor(IEFCoreCache eFCoreMemoryCache)
+        public CacheInterceptor(ICache eFCoreMemoryCache)
         {
             _eFCoreMemoryCache = eFCoreMemoryCache;
         }
