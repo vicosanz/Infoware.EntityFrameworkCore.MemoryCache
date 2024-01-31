@@ -5,7 +5,7 @@
         bool TryGetValue<TItem>(string key, out TItem value);
         Task<TItem?> GetAsync<TItem>(string key, CancellationToken cancellationToken);
         Task<TItem?> GetOrCreateAsync<TItem>(string key, Func<TItem> factory, TimeSpan absoluteExpirationRelativeToNow, CancellationToken cancellationToken = default);
-        Task<TItem?> GetOrCreateAsync<TItem>(string key, Func<Task<TItem>> factory, TimeSpan absoluteExpirationRelativeToNow, CancellationToken cancellationToken = default);
+        Task<TItem?> GetOrCreateAsync<TItem>(string key, Func<CancellationToken, Task<TItem>> factory, TimeSpan absoluteExpirationRelativeToNow, CancellationToken cancellationToken = default);
         void Set<TItem>(string key, TItem value, TimeSpan absoluteExpirationRelativeToNow);
         void RemoveKey(string? key);
         Task RemoveKeyAsync(string? key);

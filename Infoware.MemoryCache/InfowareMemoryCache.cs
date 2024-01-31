@@ -69,12 +69,12 @@ namespace Infoware.MemoryCache
             return result;
         }
 
-        public async Task<TItem?> GetOrCreateAsync<TItem>(string key, Func<Task<TItem>> factory,
+        public async Task<TItem?> GetOrCreateAsync<TItem>(string key, Func<CancellationToken, Task<TItem>> factory,
             TimeSpan absoluteExpirationRelativeToNow, CancellationToken cancellationToken = default)
         {
             if (!TryGetValue<TItem>(key, out var result))
             {
-                result = await factory();
+                result = await factory(cancellationToken);
                 if (result != null)
                 {
                     await SetAsync(key, result, absoluteExpirationRelativeToNow, cancellationToken);
