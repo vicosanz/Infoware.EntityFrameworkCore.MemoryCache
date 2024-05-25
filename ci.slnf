@@ -1,0 +1,9 @@
+{
+  "solution": {
+    "path": "Infoware.EntityFrameworkCore.MemoryCache.sln",
+    "projects": [
+      "Infoware.EntityFrameworkCore.MemoryCache\\Infoware.EntityFrameworkCore.MemoryCache.csproj",
+      "Infoware.MemoryCache\\Infoware.MemoryCache.csproj",
+    ]
+  }
+}

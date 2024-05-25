@@ -7,13 +7,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infoware.EntityFrameworkCor
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{54F4E272-ED32-45CE-B555-7693252986EA}"
 	ProjectSection(SolutionItems) = preProject
+		ci.slnf = ci.slnf
 		.github\workflows\main.yml = .github\workflows\main.yml
 		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApplication1", "WebApplication1\WebApplication1.csproj", "{C82A34D5-CF9C-4418-A330-FC0FCFA248B5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infoware.MemoryCache", "Infoware.MemoryCache\Infoware.MemoryCache.csproj", "{BD55567C-3D42-4842-841F-F8BA17BE753C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infoware.MemoryCache", "Infoware.MemoryCache\Infoware.MemoryCache.csproj", "{BD55567C-3D42-4842-841F-F8BA17BE753C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
