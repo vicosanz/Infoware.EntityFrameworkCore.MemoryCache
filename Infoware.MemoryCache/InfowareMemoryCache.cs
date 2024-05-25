@@ -17,7 +17,7 @@ namespace Infoware.MemoryCache
             _logger = logger;
         }
 
-        public bool TryGetValue<TItem>(string key, out TItem value)
+        public bool TryGetValue<TItem>(string key, out TItem? value)
         {
             if (_memoryCache.TryGetValue(key, out value))
             {
@@ -38,17 +38,17 @@ namespace Infoware.MemoryCache
             return Task.FromResult(exists ? result : default);
         }
 
-        public async Task IfExistsDoAsync<TItem>(string key, Func<TItem, Task> function, CancellationToken cancellationToken = default)
+        public async Task IfExistsDoAsync<TItem>(string key, Func<TItem?, Task> function, CancellationToken cancellationToken = default)
         {
-            if (TryGetValue<TItem>(key, out var result))
+            if (TryGetValue(key, out TItem? result))
             {
                 await function(result);
             }
         }
 
-        public Task IfExistsDoAsync<TItem>(string key, Action<TItem> function, CancellationToken cancellationToken = default)
+        public Task IfExistsDoAsync<TItem>(string key, Action<TItem?> function, CancellationToken cancellationToken = default)
         {
-            if (TryGetValue<TItem>(key, out var result))
+            if (TryGetValue(key, out TItem? result))
             {
                 function(result);
             }
@@ -105,7 +105,7 @@ namespace Infoware.MemoryCache
         public void RemoveKey(string? key)
         {
             _cachedKeys!.Remove(key, out _);
-            _memoryCache.Remove(key);
+            _memoryCache.Remove(key!);
         }
 
         public Task RemoveKeyAsync(string? key)

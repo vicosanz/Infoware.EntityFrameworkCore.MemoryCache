@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Description>Cache specific queries</Description>
@@ -10,7 +10,7 @@
     <RepositoryUrl>https://github.com/vicosanz/Infoware.EntityFrameworkCore.MemoryCache</RepositoryUrl>
     <Authors>Victor Sanchez</Authors>
     <Company>Infoware Soluciones</Company>
-    <Version>1.0.5</Version>
+    <Version>1.0.15</Version>
     <PackageReleaseNotes>Cache specific queries</PackageReleaseNotes>
   </PropertyGroup>
 
@@ -20,10 +20,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.26" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.26" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
